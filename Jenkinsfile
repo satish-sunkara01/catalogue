@@ -31,9 +31,13 @@ pipeline {
                 """
             }
         }
-        stage('Deploy') {
+        stage('Build') {
             steps {
-                echo 'Deploying....'
+                sh """
+                    ls -la
+                    zip -r catalogue.zip ./* -x ".git/" -x ".zip"
+                    ls -ltr
+                """                
             }
         }
     }
