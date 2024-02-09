@@ -14,6 +14,7 @@ const expLogger = expPino({
     logger: logger
 });
 // imagine this as developer changing the code
+// Imagine the developer change the code and now the version is 1.2.1
 // MongoDB
 var db;
 var collection;
