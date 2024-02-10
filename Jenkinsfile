@@ -13,6 +13,10 @@ pipeline {
         disableConcurrentBuilds()
         ansiColor('xterm')
     }
+    parameters {
+            booleanParam(name: 'Deploy', defaultValue: false, description: 'Run Deploy when it is true')
+    }
+
     
 
     stages {
@@ -75,6 +79,11 @@ pipeline {
             }
         }
         stage('Deploy') {
+            when {
+                expression{
+                    params.Deploy == 'true'
+                }
+            }
             steps {
                 build job: 'catalogue-deploy', wait : true, parameters: [string(name: 'version', value: "${packageVersion}"),
                 string(name: 'environment', value: 'dev')]               
