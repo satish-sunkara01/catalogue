@@ -29,66 +29,6 @@ pipeline {
                 }
             }
         }
-        stage('Installing dependecies') {
-            steps {
-                sh """
-                    npm install
-                """
-            }
-        }
-        stage('Unit testing') {
-            steps {
-                sh """
-                    echo "This is for Unit test"
-                """
-            }
-        }
-        stage('Sonar Scanner') {
-            steps {
-                sh """
-                    sonar-scanner
-                """
-            }
-        }
-        stage('Build') {
-            steps {
-                sh """
-                    ls -la
-                    zip -q -r catalogue.zip ./* -x ".git/" -x ".zip"
-                    ls -ltr
-                """                
-            }
-        }
-        stage('nexus_artifact') {
-            steps {
-                  nexusArtifactUploader(
-                        nexusVersion: 'nexus3',
-                        protocol: 'http',
-                        nexusUrl: "${nexusURL}",
-                        groupId: 'com.roboshop',
-                        version: "${packageVersion}",
-                        repository: 'catalogue',
-                        credentialsId: 'nexus-auth',
-                        artifacts: [
-                            [artifactId: 'catalogue',
-                            classifier: '',
-                            file: 'catalogue.zip',
-                            type: 'zip']
-                        ]
-                     )               
-            }
-        }
-        stage('Deploy') {
-            when {
-                expression{
-                    params.Deploy == 'true'
-                }
-            }
-            steps {
-                build job: 'catalogue-deploy', wait : true, parameters: [string(name: 'version', value: "${packageVersion}"),
-                string(name: 'environment', value: 'dev')]               
-            }
-        }
     }
     post { 
         always { 
